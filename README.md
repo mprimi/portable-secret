@@ -10,7 +10,7 @@ Securely storing and exchanging secrets is can be tricky, even for experts. **I 
 I personally use PS for the following:
 
  * Store important documents I want access to, even if I lose access to all my devices (copy of passport, concert tickets, ...)
- * Exchange *secrets* (online services passwords, bank account numbers, tax documents) with my family, friends and collaborators via non-secure channels (email, messaging, web)
+ * Exchange *secrets* (online services passwords, bank account numbers, tax documents) with my family, friends and coworkers over non-secure channels (email, chat, web)
  * Store my top-level secret keys (i.e. backup recovery key, GPG keys, SSH keys, ...), I can carry these secrets with me on computers and unencrypted USB drives without fear of leaking them.
 
 PS is a tool, and as such it can be used wrong, or to do bad things,
