@@ -21,14 +21,17 @@
           }
 
           // The cleartext input must be padded to a multiple of the block size
-          // for encryption. This function removes the padding.
+          // for encryption. This function removes the padding, expected to be
+          // compatible with PKCS#7 described in RFC 5652.
           // https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7
           function removePadding(input) {
+            // Last byte is the amount of padding
             padAmount = input[input.length-1]
             unpaddedSize = input.length - padAmount
             return input.slice(0, unpaddedSize)
           }
 
+          // Update page with status of decryption
           function setMessage(msg) {
             document.getElementById("errormsg").innerHTML = msg
           }
@@ -62,11 +65,14 @@
                 return
               }
 
+              // TODO rather than pulling these values from the HTML,
+              // save as vars in JS and push them to the page on load.
+
               // Load ciphertext
               cipherHex = document.getElementById("cipher").value
               cipherBytes = hexStringToBytes(cipherHex)
 
-              // Create a raw key (W3C API wrapper around a password)
+              // Create a 'raw' key (W3C API object wrapping a password)
               passwordKey = await window.crypto.subtle.importKey(
                 "raw",
                 passwordBytes,
@@ -75,7 +81,7 @@
                 ["deriveKey"]
               )
 
-              // Create the key, by deriving it with PBKDF2 from the password
+              // Create the key (by deriving it with PBKDF2 from the password)
               key = await window.crypto.subtle.deriveKey(
                 {
                   name: "PBKDF2", // Key derivation algorithm
@@ -85,7 +91,7 @@
                 },
                 passwordKey,
                 {
-                  name: "AES-CBC", // This is a key for AES-CBC mode
+                  name: "AES-CBC", // Block cipher algorithm it's used for
                   length: keyLength,
                 },
                 false, // not extractable
@@ -93,6 +99,8 @@
               )
 
               // Use the key to decrypt the ciphertext
+              // TODO: maybe switch to AES-GCM (built-in authentication, does it
+              // buy anything in this context?
               decrypted = await window.crypto.subtle.decrypt(
                 {
                   name: "AES-CBC",
@@ -102,16 +110,21 @@
                 cipherBytes
               )
 
-              // Remove padding added before encryption
+              // Remove plaintext padding
               decryptedBytes = removePadding(new Uint8Array(decrypted))
 
               // Decode bytes to UTF-8
               output = new TextDecoder().decode(decryptedBytes)
 
               setMessage("✅ Decrypted successfully")
+
+              // Display the plaintext on the page
               document.getElementById("plaintext").innerHTML = output
+              // TODO: this way of inserting may inject HTML or JS.
+              // Make the message inert, so hitting decrypt is always safe.
 
             } catch (err) {
+              // TODO better handle failing promises
               setMessage("❌ Decryption failed (wrong password?)")
               return
             }
@@ -122,6 +135,7 @@
             background-color: floralwhite;
             font-size: large;
           }
+
           div {
             margin: 5px;
           }
@@ -137,9 +151,12 @@
             border: 2px dashed black;
             padding: 3px;
           }
-
         </style>
     </head>
+    <!--
+      The rest of this is just the HTML fields displayed on the page.
+      The only active element is the decrypt button.
+    -->
     <body>
         <h1>Portable Secret: Example</h1>
 
