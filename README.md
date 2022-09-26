@@ -102,7 +102,8 @@ Hammers, cars, computers, and anything else can be used for good and for bad.
 
 ### Feedback
 
-I would love to hear what you think of this project.
-Please do [create a GH issue](https://github.com/mprimi/portable-secret/issues) if you have anything to share.
+I would love to hear what you think of this project, wether your feedback is good, bad, or ugly.
 
-Or send me an email. You can find my homepage through my GH profile.
+Please use [GH issue](https://github.com/mprimi/portable-secret/issues) to report problem and make improvement suggestions. For everything else, start a [GH Discussion](https://github.com/mprimi/portable-secret/discussions).
+
+Happy to talk over email too. My homepage has my email address (and PGP key), you can find it through my [GH profile](https://github.com/mprimi).
