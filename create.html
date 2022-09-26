@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Portable Secret - Creator</title>
+  </head>
+  <body>
+
+    As of now, I'm not ready to share the PS creator.<br>
+    My Javascript-fu is pretty weak, so it's taking me a while to clean it up enough to be shared.<br>
+
+    But here's how the creator works:<br>
+
+    <ul>
+      <li>Generate IV and Salt (using browser cryptography APIs)</li>
+      <li>Input password hint</li>
+      <li>Input password</li>
+      <li>Input plaintext (or open file/image from disk)</li>
+      <li>Upon hitting save, a Portable Secret (HTML file with encrypted payload) is generated and downloaded to disk</li>
+    </ul>
+
+    Encryption works offline, is dependency free and is carried out entirely in the browser window context (just like decrypt).
+
+    This <a href="https://mprimi.github.io/portable-secret/example.html">example</a> is an example output.
+
+  </body>
+</html>
