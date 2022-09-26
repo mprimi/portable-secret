@@ -1,36 +1,37 @@
 # 🔐 Portable Secret
 A low-tech, super-portable hack to securely carry your most important secrets with you.
 
-Can also be used to add a layer of privacy to your communication over non-secure channels (email, SMS, cloud drives, ...)
+Can also be used to communicate privately over non-secure channels (email, SMS, cloud drives, etc.)
 
 ---
 
 Portable Secret (`PS`) it's not a product and barely a project. It is a trick, a *hack*.
-The source code and tool provided here are merely a demonstration of such a hack.
+The [source code](https://github.com/mprimi/portable-secret) and tool provided are merely a demonstration of such a hack.
 
 ## Motivation
 
-Securely storing and exchanging secrets can be tricky, even for experts. **I wanted a tool so simple that even my mom could learn how to use it**.
-I have been using `PS` with family and friends to communicate privately, when the circumstances require it.
+Securely storing and exchanging secrets can be tricky, even for experts. **I wanted a tool so simple that even my mom could learn how to use it**. I have been using `PS` with family and friends to communicate privately, when the circumstances require it.
+
+It can also be used to create secure key backups accessible from anywhere without special software.
 
 ## How it works
 
 A `Portable Secret` is self-contained HTML file containing an encrypted payload.
+A few lines of pure Javascript (no external dependencies) use the browser built-in [Web Cryptography APIs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) to decrypt the secret.
 
-The file also also contains a few lines of pure Javascript (no external dependencies).
-This script uses the browser built-in [Web Cryptography APIs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API) to decrypt the secret.
+These files can be sent over email, SMS, or stored online (Dropbox, FTP, Cloud Drive, ...).
 
-The file can be sent over email, SMS, or stored online (Dropbox, FTP, Cloud Drive, ...).
+The receiver can open the file in a web browser, even without an internet connection.
+If they know the password, they can and retrieve the secret.
+No data leaves the browser window context.
 
-The receiver can open the file in a web browser (even without an internet connection), plug in the password, and retrieve the secret. No data leaves the browser window context.
-
-Please try this **[example](https://mprimi.github.io/portable-secret/example.html)**, hopefully more clear than 1000 words.
+Try this **[example](https://mprimi.github.io/portable-secret/example.html)**.
 
 You can create a secret for yourself [here](https://mprimi.github.io/portable-secret/create.html)
 
-## Use case scenarios
+## Usage scenario
 
-I use PS in the following situations:
+I use `PS` in in the following situations:
 
 #### Store top-level keys
 
@@ -65,31 +66,38 @@ This is similar to sharing an encrypted PDF, except I trust my solution more. Pl
 
 #### Talk privately to friends, and share pictures
 
-I occasionally want to send or receive a text or a picture that I would like to be extra-extra-extra confidential, e.g., a spicy picture from my partner, a rant about coworker, or a joke that could hurt my reputation if read by someone that doesn't know me.
+I sometimes want to send or receive a text or a picture that and NOT share it with the platform I'm sending it with, e.g., a spicy picture from my partner, a rant about coworker, or a joke that could hurt my reputation if read by someone that doesn't know me.
 I do not trust the Big Tech companies with this kind of content, and neither should you.
-Here `PS` can add an extra layer of transport security, at the cost of a little inconvenience.
 
 *Paranoid scenario*: Google is reading my emails, Facebook is reading my messages, no dispute here. At any time in the future, my conversation on these platforms may leak (disgruntled employee, nation-state hack, sheer incompetence, ...). I'm ok with 99.999% of my messages leaking online. For the remaining 0.001%, I use `PS`, and I sleep better at night.
 
+#### Unexpected game over
+
+I worry about the troubles my family could run into in case of my unexpected death.
+I use `PS` to encrypt letters to my family to be opened in such a situation. They contain instructions for accessing my secure data and accounts.
+
+*Paranoid scenario*: I get hit by a bus. Because I store my data securely, my family would have no access to any online account, bank and other asset details. They may have to jump through many, many oops to recover access, if they even manage to discover they exist.
+
+
 ## On Portability
 
-I consider `PS` *portable* because:
+I call this kind of secret *portable* because:
 
  * It consists of a single HTML file with no external dependencies
- * It can be easily carried and stored (on computers, cloud drives, USB drives, FTP and web servers, ...)
+ * It can be easily carried and stored (on devices, cloud drives, USB drives, FTP and web servers, ...)
  * It requires no internet connection to decrypt (or encrypt for that matter)
  * It can be opened securely on any device and operating system that can run a semi-modern web browser
- * It uses NIST-recommended algorithm (e.g. compatible encryption/decryption can be trivially implemented in a different language)
+ * It uses NIST-recommended standard algorithm (e.g. compatible encryption/decryption can be trivially implemented in any language)
 
 ### On tools
 
-`PS` is a tool. As such, it can be used *wrong* (e.g. weak password for critical secret), or used to do bad things (e.g., facilitate exfiltration of IP or copyrighted material).
+Portable Secret is a *tool*. As such, it can be used *wrong* (e.g. weak password), or used to do bad things (e.g., facilitate exfiltration of intellectual property, or exchange copyrighted material).
 
 I cannot take responsibility for such misuse any more than a hammer manufacturer can take responsibility for you hammering your thumb, or using the hammer to attack someone.
 
-I can only hope that for each bad usage, there are 100 good ones (according to my own subjective notions of good and bad).
+I can only hope that for each bad usage, there are 1000 good ones (whatever good and bad means to me).
 
-As a society, we apply the same reasoning to hammers, cars, computers, and everything else that can be used for good and for bad.
+Hammers, cars, computers, and anything else can be used for good and for bad.
 
 
 ### Feedback
@@ -97,4 +105,4 @@ As a society, we apply the same reasoning to hammers, cars, computers, and every
 I would love to hear what you think of this project.
 Please do [create a GH issue](https://github.com/mprimi/portable-secret/issues) if you have anything to share.
 
-Alternatively, send me an email. You can find my homepage through my GH profile (the friction is intentional, I hope you understand my reasons).
+Or send me an email. You can find my homepage through my GH profile.
