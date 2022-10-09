@@ -11,6 +11,16 @@
         <script>
           const blockSize = 16 // bytes
           const keyLength = 256 // bits (= 32 bytes)
+          const saltHex = "f85b7c02fb93064f13dda0c26fcbb336"
+          const ivHex = "35ba805ef946e860ef036cb7b95433bf"
+          const cipherHex = "3a63ed05ffb8565ae1df30bccc35a9500851c62267a0dc20a6384c99fae1e739df1c04db86ded11dbbb508c85d3d6cac95905e71bc4a4a5806b452d8c7fdd0059075c62c0c2ba606088915d57cc9ca7e5d8435393e9e2fd516433cd5d22ef3dcbd347f105e9c0576f4c4c18e72f5cde3d545ac62da5e794b877dbee79df9d2cdd79b6385a633c966d9b131de71f3fe5ef61021557042be47ae37f15f8ce31bfac589054966ad96687945b40da269d47c05b49cf8b29fc8a3b853c25fa2d6d7e8f0bbb8ff09d3a593a6fd104776915dd09ce64dedf79ddd537bdc350ebfedef3acbeb70069324dba87fc3b5c3f3d663544daf3ba7fe0f71c332a3447d601deaa7488ff1ad964649c7c15d9a4dd6f30c9e63b33a2837e9a22e24a5b305e2aa06e74c5516fc92be1c16589443cf6a0f6b41fff6eb8dfb162557113e49a7ff74d8b6fe86cc1eaf90911852d57c86e5db673650a53126e52cb1fff60d96024ebc9d98b9fe9957c8ac130c7d3d7eeb8977322f5ccfe33f8962ecb3c9ec8eaddaa18c4cfb46eed7d652ac455666844b67de76570103c84e385e837b2be3b8b258667e8985b09e1848d4243a2474d6a51523190d50dc3a7f1bbf1081ecfd477dcb60237635f31853731c6f93749bf1d13bdcbe97381ddd45fc0a5ad5d41cefb0744aace2b1a588f12b7595bbddebd38c6ea6978651b625ed389c0f7fa73d413e24cc812d8a03bb8406275221cd704d09fa63d75dac2339fef6fa3d78dfe6b80c3524d9941a492b9595bc6ca0a40a2c6ad8257e38dd01caa161f2a376bc8ad6f7a18d3fe6"
+
+          // Display the encryption inputs on the page (invoked during body onload)
+          async function loadOpaqueValues() {
+            document.getElementById("salt").setAttribute("value", saltHex)
+            document.getElementById("iv").setAttribute("value", ivHex)
+            document.getElementById("cipher").innerHTML = cipherHex
+          }
 
           // Turn an ASCII-encoded hexadecimal string into the corresponding byte array
           function hexStringToBytes(input) {
@@ -42,7 +52,6 @@
               setMessage("⏳ Decrypting...")
 
               // Read and validate Salt
-              saltHex = document.getElementById("salt").value
               saltBytes = hexStringToBytes(saltHex)
               if (saltBytes.length != blockSize) {
                 setMessage("❌ Invalid salt")
@@ -50,7 +59,6 @@
               }
 
               // Read and validate IV
-              ivHex = document.getElementById("iv").value
               ivBytes = hexStringToBytes(ivHex)
               if (ivBytes.length != blockSize) {
                 setMessage("❌ Invalid IV")
@@ -69,7 +77,6 @@
               // save as vars in JS and push them to the page on load.
 
               // Load ciphertext
-              cipherHex = document.getElementById("cipher").value
               cipherBytes = hexStringToBytes(cipherHex)
 
               // Create a 'raw' key (W3C API object wrapping a password)
@@ -155,9 +162,11 @@
     </head>
     <!--
       The rest of this is just the HTML fields displayed on the page.
-      The only active element is the decrypt button.
+      The only active element are:
+       - Encryption inputs (IV, Salt, Cipher) displayed on-load
+       - Decrypt button
     -->
-    <body>
+    <body onload="loadOpaqueValues()">
         <h1>Portable Secret: Example</h1>
 
         <p>This file is self-contained.
@@ -197,19 +206,18 @@
 
             <div>
               Salt:
-              <input type="text" id="salt" value="f85b7c02fb93064f13dda0c26fcbb336" required>
+              <input type="text" id="salt" value="" required>
             </div>
 
             <div>
               IV:
-              <input type="text" id="iv" value="35ba805ef946e860ef036cb7b95433bf" required>
+              <input type="text" id="iv" value="" required>
             </div>
 
             <div>
               Ciphertext:<br>
-              <textarea rows="8" cols="80" id="cipher">3a63ed05ffb8565ae1df30bccc35a9500851c62267a0dc20a6384c99fae1e739df1c04db86ded11dbbb508c85d3d6cac95905e71bc4a4a5806b452d8c7fdd0059075c62c0c2ba606088915d57cc9ca7e5d8435393e9e2fd516433cd5d22ef3dcbd347f105e9c0576f4c4c18e72f5cde3d545ac62da5e794b877dbee79df9d2cdd79b6385a633c966d9b131de71f3fe5ef61021557042be47ae37f15f8ce31bfac589054966ad96687945b40da269d47c05b49cf8b29fc8a3b853c25fa2d6d7e8f0bbb8ff09d3a593a6fd104776915dd09ce64dedf79ddd537bdc350ebfedef3acbeb70069324dba87fc3b5c3f3d663544daf3ba7fe0f71c332a3447d601deaa7488ff1ad964649c7c15d9a4dd6f30c9e63b33a2837e9a22e24a5b305e2aa06e74c5516fc92be1c16589443cf6a0f6b41fff6eb8dfb162557113e49a7ff74d8b6fe86cc1eaf90911852d57c86e5db673650a53126e52cb1fff60d96024ebc9d98b9fe9957c8ac130c7d3d7eeb8977322f5ccfe33f8962ecb3c9ec8eaddaa18c4cfb46eed7d652ac455666844b67de76570103c84e385e837b2be3b8b258667e8985b09e1848d4243a2474d6a51523190d50dc3a7f1bbf1081ecfd477dcb60237635f31853731c6f93749bf1d13bdcbe97381ddd45fc0a5ad5d41cefb0744aace2b1a588f12b7595bbddebd38c6ea6978651b625ed389c0f7fa73d413e24cc812d8a03bb8406275221cd704d09fa63d75dac2339fef6fa3d78dfe6b80c3524d9941a492b9595bc6ca0a40a2c6ad8257e38dd01caa161f2a376bc8ad6f7a18d3fe6</textarea>
+              <textarea rows="8" cols="80" id="cipher"></textarea>
             </div>
         </details>
-
     </body>
 </html>
