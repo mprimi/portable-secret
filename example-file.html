@@ -1,0 +1,225 @@
+<!--
+  Thank you for looking at this example source code!
+  This is the interesting bit, the rendered version is just the user interface.
+
+  Notice this file is self contained, no external dependencies.
+  Just an HTML file with some Javascript that runs in the context of the window.
+-->
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <script>
+          const blockSize = 16 // bytes
+          const keyLength = 256 // bits (= 32 bytes)
+
+          // Display the encryption inputs on the page (invoked during body onload)
+          async function loadOpaqueValues() {
+            document.getElementById("salt").setAttribute("value", saltHex)
+            document.getElementById("iv").setAttribute("value", ivHex)
+            document.getElementById("cipher").innerHTML = cipherHex
+          }
+
+          // Turn an ASCII-encoded hexadecimal string into the corresponding byte array
+          function hexStringToBytes(input) {
+            for (var bytes = [], c = 0; c < input.length; c += 2) {
+              bytes.push(parseInt(input.substr(c, 2), 16));
+            }
+            return Uint8Array.from(bytes);
+          }
+
+          // The cleartext input must be padded to a multiple of the block size
+          // for encryption. This function removes the padding, expected to be
+          // compatible with PKCS#7 described in RFC 5652.
+          // https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7
+          function removePadding(input) {
+            // Last byte is the amount of padding
+            padAmount = input[input.length-1]
+            unpaddedSize = input.length - padAmount
+            return input.slice(0, unpaddedSize)
+          }
+
+          // Update page with status of decryption
+          function setMessage(msg) {
+            document.getElementById("errormsg").innerHTML = msg
+          }
+
+          async function decrypt() {
+
+            try {
+              setMessage("⏳ Decrypting...")
+
+              // Read and validate Salt
+              saltBytes = hexStringToBytes(saltHex)
+              if (saltBytes.length != blockSize) {
+                setMessage("❌ Invalid salt")
+                return
+              }
+
+              // Read and validate IV
+              ivBytes = hexStringToBytes(ivHex)
+              if (ivBytes.length != blockSize) {
+                setMessage("❌ Invalid IV")
+                return
+              }
+
+              // Read and validate Password
+              password = document.getElementById("password").value
+              passwordBytes = new TextEncoder().encode(password)
+              if (password.length == 0) {
+                setMessage("❌ Missing password")
+                return
+              }
+
+              // TODO rather than pulling these values from the HTML,
+              // save as vars in JS and push them to the page on load.
+
+              // Load ciphertext
+              cipherBytes = hexStringToBytes(cipherHex)
+
+              // Create a 'raw' key (W3C API object wrapping a password)
+              passwordKey = await window.crypto.subtle.importKey(
+                "raw",
+                passwordBytes,
+                {name: "PBKDF2"}, // Use this key as input to PBKDF2 key generator
+                false, // not extractable
+                ["deriveKey"]
+              )
+
+              // Create the key (by deriving it with PBKDF2 from the password)
+              key = await window.crypto.subtle.deriveKey(
+                {
+                  name: "PBKDF2", // Key derivation algorithm
+                  salt: saltBytes,
+                  iterations: 1000000,
+                  hash: "SHA-1", // As per standard v2.0
+                },
+                passwordKey,
+                {
+                  name: "AES-CBC", // Block cipher algorithm it's used for
+                  length: keyLength,
+                },
+                false, // not extractable
+                ["decrypt"] // This is a decryption key
+              )
+
+              // Use the key to decrypt the ciphertext
+              // TODO: maybe switch to AES-GCM (built-in authentication, does it
+              // buy anything in this context?
+              decrypted = await window.crypto.subtle.decrypt(
+                {
+                  name: "AES-CBC",
+                  iv: ivBytes,
+                },
+                key,
+                cipherBytes
+              )
+
+              // Remove plaintext padding
+              decryptedBytes = removePadding(new Uint8Array(decrypted))
+
+              // Decode bytes to UTF-8
+              output = new TextDecoder().decode(decryptedBytes)
+
+              setMessage("✅ Decrypted successfully")
+
+              // Activate download button with data URI payload
+              const dataURI = "data:application/octet-stream;base64," + output
+              document.getElementById("download_button").setAttribute("href", dataURI)
+
+            } catch (err) {
+              // TODO better handle failing promises
+              setMessage("❌ Decryption failed (wrong password?)")
+              return
+            }
+          }
+        </script>
+        <style>
+          body {
+            background-color: floralwhite;
+            font-size: large;
+          }
+
+          div {
+            margin: 5px;
+          }
+
+          p.plaintext {
+            background-color: lavender;
+            border: 2px dotted black;
+            padding: 3px;
+          }
+
+          p.hint {
+            background-color: lavender;
+            border: 2px dashed black;
+            padding: 3px;
+          }
+        </style>
+    </head>
+    <!--
+      The rest of this is just the HTML fields displayed on the page.
+      The only active element are:
+       - Encryption inputs (IV, Salt, Cipher) displayed on-load
+       - Decrypt button
+    -->
+    <body onload="loadOpaqueValues()">
+        <h1>Portable Secret example: Passport </h1>
+
+        <p>This file is self-contained.
+        It has no dependencies and runs entirely within the browser window.</p>
+        <p>No internet connection is required. You can right-click, save it as HTML file, then open from disk with a browser of your choice.</p>
+        <p>If I were you, I'd take a look at the source code before downloading and running any file.
+          The code is short, simple and commented, and should only take a minute to grok.</p>
+
+        <div>
+          <h4>Password hint:</h4>
+          <p class="hint">When creating a secret you can optionally include a password hint for the recipient.<br>
+          In this case, no guessing required: <strong>the password is celery</strong></p>
+        </div>
+
+        <div>
+          <h4>Password:</h4>
+          <input type="text" id="password" placeholder="See hint above" required>
+        </div>
+
+        <br>
+
+        <div>
+          <input type="button" value="🗝 Decrypt" onclick='decrypt()'>
+          <span></span>
+          <span id="errormsg"></span>
+        </div>
+
+        <div>
+          <p class="plaintext"><a id="download_button" download="secret.zip"/>Download secret.zip</p>
+        </div>
+
+        <details>
+            <summary>Show opaque inputs</summary>
+
+            These are decryption inputs that can be safely transmitted in the clear.
+            Without a password they are useless.
+
+            <div>
+              Salt:
+              <input type="text" id="salt" value="" required>
+            </div>
+
+            <div>
+              IV:
+              <input type="text" id="iv" value="" required>
+            </div>
+
+            <div>
+              Ciphertext:<br>
+              <textarea rows="8" cols="80" id="cipher"></textarea>
+            </div>
+        </details>
+    </body>
+    <script>
+      //
+      const saltHex = "8ebbe946aa8dfe91a3f6fbf7ab99160c"
+      const ivHex = "d15762e38f45640af2a0368ca4f7787c"
+      const cipherHex = "3677139587f2200cb09e1afadcceed738e47216cc50a05e0c3d60f113cf10a55998d1fb07c0578bcfa1020309209ba298c64310c399388111a9a908fff1e5991d62bb494213315838f45e7c61aba79cc8d9a630d1a5a6b4060574626d4b0bf372d414636c37fcf7f69b05ee66c41e63c687893634f841f42341a01e0a723eb8dd689c32a50b908aa9bd52603d0841cce0be9b2b9c46d96d014fd93cea870c1360b9627e1432c1da9c7a417096b3f51914999303388e94fc4aed5270ee7c3df947528b4d44bc6962360c1ac2fbd1e72e91cc8e993fd3ff3d26c07d94537ac81d66b9a97f551196724d490ed36bc2876210a99e3093761372ddf552cabe917d34014a5eb1f453f16ee2a271d28b4eb7d510468d5a5fc65bb577550553d4ab6e278ed2c14f66881d76db93e2ec968e71ee1d09bc8408458e17a4d88d4c3e3067fc648d6e42b76cafac589746097deeff1ae1e1cdc4d276644900a07b8bc66f1c3df"
+    </script>
+</html>
