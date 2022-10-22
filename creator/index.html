@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>
+  const blockSize = 16 // bytes (for AES, IV)
+  const saltSize = 16 // bytes (for PBKDF2)
+  const iterations = 1000000 // key derivation (with PBKDF2)
+  const keySize = 32 // bytes (derived with PBKDF2, used by AES)
+
+  async function init() {
+    await refreshSalt()
+    await refreshIV()
+    setMessage("👍 Ready to encrypt")
+  }
+
+  async function encrypt() {
+
+    // All cryptography is delegated to the browser engine through.
+    // W3C Web Cryptography API standard
+    // https://www.w3.org/TR/WebCryptoAPI/
+    // No cryptography was hand-rolled in the making of this tool. ;-)
+
+    setMessage("⏳ Importing key...")
+
+    // Whatever array of bytes is in the password field
+    let password = new TextEncoder().encode(document.getElementById("password").value)
+
+    if (password.length == 0) {
+      throw new Error(`Empty password`)
+    }
+
+    // Import password into a Key suitable for use with Cryptography APIs
+    let passwordKey = await window.crypto.subtle.importKey(
+      "raw",  // a puny array of bytes
+      password,
+      {name: "PBKDF2"}, // What will use this key
+      false, // key is not extractable
+      ["deriveKey"] // What they can use it for
+    )
+
+    setMessage("⏳ Deriving key from password...")
+
+    // Salt input field (0x string)
+    let saltHexString = document.getElementById("salt").value
+
+    // Salt for password derivation with PBKDF2 (byte array)
+    let salt = hexStringToBytes(saltHexString)
+
+    if (salt.length != saltSize) {
+      throw new Error(`Unexpected salt length: ${salt.length}`)
+    }
+
+    // 'Strech' a password into a cryptographically secure key of a given size
+    let key = await window.crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2", // https://en.wikipedia.org/wiki/PBKDF2
+        salt: salt, // for flavor
+        iterations: iterations, // how long to stomp on the password
+        hash: "SHA-1", // As per standard v2.0
+      },
+      passwordKey, // Wrapped password
+      {
+        name: "AES-GCM", // What is this key for
+        length: keySize * 8 // key size in bits
+      },
+      false, // key is not extractable
+      ["encrypt"]
+    )
+
+    setMessage("⏳ Preparing inputs...")
+
+    // IV input field (0x string)
+    let ivHexString = document.getElementById("iv").value
+
+    // IV for AES
+    let iv = hexStringToBytes(ivHexString)
+
+    if (iv.length != blockSize) {
+      throw new Error(`Unexpected IV length: ${iv.length}`)
+    }
+
+    // Message input field, as array of bytes
+    let plainText = new TextEncoder().encode(document.getElementById("message").value)
+
+    // Pad plaintext to block size, as describe in:
+    // https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7
+    plaintText = function(input) {
+      output = []
+      padAmount = blockSize - (input.length % blockSize)
+      for (var i = 0; i < input.length; i++) {
+        output.push(input[i])
+      }
+      for (var i = 0; i < padAmount; i++) {
+        output.push(padAmount)
+      }
+      return Uint8Array.from(output);
+    }(plainText)
+
+    setMessage("⏳ Encrypting...")
+
+    // Encrypt with AES in 'Galois/Counter Mode' (integrity + confidentiality)
+    // https://en.wikipedia.org/wiki/Galois/Counter_Mode
+    let cipherBuffer = await window.crypto.subtle.encrypt(
+      {
+        name: "AES-GCM",
+        iv: iv,
+      },
+      key,
+      plaintText
+    )
+    let cipherHexString = bytesToHexString(new Uint8Array(cipherBuffer))
+
+    return {
+      salt: saltHexString,
+      iv: ivHexString,
+      cipher: cipherHexString,
+    }
+  }
+
+  async function generateSecret() {
+
+    setMessage("⏳ Creating Secret...")
+
+    async function loadTemplate(name) {
+      response = await fetch("./" + name)
+      if (!response.ok) {
+        throw new Error(`Failed to retrieve: ${name} response: ${response.status}`)
+      }
+      return await response.text()
+    }
+
+    try {
+
+      setMessage("⏳ Begin encryption...")
+
+      // Return salt IV cipher as hex strings
+      let encryption = await encrypt()
+      document.getElementById("cipher").innerHTML = encryption.cipher //0x string
+
+      setMessage("⏳ Retrieving templates...")
+
+      const pageTemplate = await loadTemplate("secret-template.html")
+      const decryptScript = await loadTemplate("decrypt.js")
+      const valuesTemplate = await loadTemplate("values.js")
+
+      setMessage("⏳ Generating download blob...")
+
+      values = valuesTemplate
+      values = values.replaceAll("'{.SALT_SIZE}'", saltSize)
+      values = values.replaceAll("'{.BLOCK_SIZE}'", blockSize)
+      values = values.replaceAll("'{.KEY_SIZE}'", keySize)
+      values = values.replaceAll("'{.ITERATIONS}'", iterations)
+      values = values.replaceAll("'{.SALT_HEX}'", encryption.salt)
+      values = values.replaceAll("'{.IV_HEX}'", encryption.iv)
+      values = values.replaceAll("'{.CIPHER_HEX}'", encryption.cipher)
+
+      secretPage = pageTemplate
+      secretPage = secretPage.replaceAll("{{DECRYPT_SCRIPT}}\n", decryptScript)
+      secretPage = secretPage.replaceAll("{{VALUES}}\n", values)
+
+      const dataURI = "data:application/octet-stream;base64," + btoa(secretPage)
+      document.getElementById("target_link").setAttribute("href", dataURI)
+
+      setMessage("✅ Ready for download")
+
+    } catch (err) {
+      setMessage("❌ " + err)
+    }
+  }
+
+  async function setMessage(newMessage) {
+    document.getElementById("errormsg").innerHTML = newMessage
+  }
+
+  async function refreshSalt() {
+    let salt = crypto.getRandomValues(new Uint8Array(saltSize));
+    document.getElementById("salt").value = bytesToHexString(salt)
+    setMessage("Refreshed salt")
+  }
+
+  async function refreshIV() {
+    let iv = crypto.getRandomValues(new Uint8Array(blockSize));
+    document.getElementById("iv").value = bytesToHexString(iv)
+    setMessage("Refreshed IV")
+  }
+
+  function bytesToHexString(input) {
+    for (var hex = [], i = 0; i < input.length; i++) {
+      var current = input[i] < 0 ? input[i] + 256 : input[i];
+      hex.push((current >>> 4).toString(16));
+      hex.push((current & 0xF).toString(16));
+    }
+    return hex.join("");
+  }
+
+  function hexStringToBytes(input) {
+    // TODO accepts invalid (non-hex) values, e.g. ZZZZ
+    for (var bytes = [], c = 0; c < input.length; c += 2) {
+      bytes.push(parseInt(input.substr(c, 2), 16));
+    }
+    return Uint8Array.from(bytes);
+  }
+
+  </script>
+</head>
+<body onload="init()">
+  <h1>Secret Creator</h1>
+  <h2>This page runs entirely in your window. No dependencies or calls to the outside world.</h2>
+  <h3>No data leaves your browser, other than the (encrypted) secret you can download</h3>
+  But don't take my word for it. Check out the source code!
+
+  <!-- Error message -->
+
+  <div>
+    <p id="errormsg">
+    </p>
+  </div>
+
+  <!-- Inputs -->
+
+  <p>
+    Salt and IV are random input of the encryption, but they do not need to be secret.<br>
+    They are random bytes coming straight from your browser's RNG.<br>
+    Do not create multiple secrets with the same values. Hit the buttons to regenerate.<br>
+  </p>
+  <div>
+    Salt: 0x
+    <input type="text" id="salt" size="33" value="❓" required>
+    <input type="button" value="🔄" onclick='refreshSalt()'>
+  </div>
+
+  <div>
+    IV: 0x
+    <input type="text" id="iv" size="33" value="❓" required>
+    <input type="button" value="🔄" onclick='refreshIV()'>
+  </div>
+
+  <div>
+    Password:<br>
+    <input type="text" id="password" value="banana" required>
+  </div>
+
+  <div>
+    Message:<br>
+    <textarea rows="4" cols="80" id="message" required>Hello World</textarea>
+  </div>
+
+  <!-- Generate button, and Download link -->
+
+  <div>
+    <input type="button" value="⚡️ Generate" onclick='generateSecret()'>
+  </div>
+  <div>
+    <a id="target_link" download="hello.html">Download secret.html</a>
+  </div>
+
+  <!-- Cipertext -->
+
+  <details>
+    <summary>Show ciphertext</summary>
+    <div>
+      <textarea rows="8" cols="80" id="cipher"></textarea>
+    </div>
+  </details>
+</body>
+</html>
