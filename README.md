@@ -47,7 +47,7 @@ The decrypted data exists only temporarily within the browser window context.
 
 ### **[Example](https://mprimi.github.io/portable-secret/example.html)**
 
-You can create yourself a Portable Secret [here](https://mprimi.github.io/portable-secret/create.html)
+You can create yourself a Portable Secret [here](https://mprimi.github.io/portable-secret/creator)
 
 ### Portability
 
