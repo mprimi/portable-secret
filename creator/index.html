@@ -144,6 +144,8 @@
       const decryptScript = await loadTemplate("decrypt.js")
       const valuesTemplate = await loadTemplate("values.js")
 
+      const passwordHint = document.getElementById("password_hint").value
+
       setMessage("⏳ Generating download blob...")
 
       values = valuesTemplate
@@ -157,6 +159,7 @@
 
       secretPage = pageTemplate
       secretPage = secretPage.replaceAll("{{DECRYPT_SCRIPT}}\n", decryptScript)
+      secretPage = secretPage.replaceAll("{{PASSWORD_HINT}}", passwordHint)
       secretPage = secretPage.replaceAll("{{VALUES}}\n", values)
 
       const dataURI = "data:application/octet-stream;base64," + btoa(secretPage)
@@ -242,8 +245,21 @@
   </div>
 
   <div>
-    Message:<br>
-    <textarea rows="4" cols="80" id="message" required>Hello World</textarea>
+    Password hint:<br>
+    <textarea rows="8" cols="80" id="password_hint" required>
+This is an (optional) password hint for the receiver of the secret.
+
+Choosing a strong password is key (pun intended)!
+But **strong enough** is context sensitive!
+What is "good enough" for one use-case, may be a terrible idea in a different scenario.
+
+Read this for suggestions and considerations: https://mprimi.github.io/portable-secret/creator/#TODO
+    </textarea>
+  </div>
+
+  <div>
+    Secret message:<br>
+    <textarea rows="16" cols="80" id="message" required>Hello World</textarea>
   </div>
 
   <!-- Generate button, and Download link -->
