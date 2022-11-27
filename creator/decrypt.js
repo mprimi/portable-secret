@@ -75,11 +75,26 @@ async function decrypt() {
     // https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7
     decrypted = removePadding(new Uint8Array(decryptedBuffer))
 
-    // Decode bytes to UTF-8
-    plainText = new TextDecoder().decode(decrypted)
-
-    // Display the plaintext on the page
-    document.getElementById("plaintext").innerHTML = plainText
+    if (secretType == "text") {
+      // Decode bytes to UTF-8
+      plainText = new TextDecoder().decode(decrypted)
+      // Display the plaintext on the page
+      document.getElementById("target_text").innerHTML = plainText
+      document.getElementById("text_output_div").hidden = false
+    } else if (secretType == "image") {
+      b64Data = btoa(decrypted.reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      const imageData = `data:image/${secretExt};base64,${b64Data}`
+      document.getElementById("target_image").setAttribute("src", imageData)
+      document.getElementById("image_output_div").hidden = false
+    } else if (secretType == "file") {
+      b64Data = btoa(decrypted.reduce((data, byte) => data + String.fromCharCode(byte), ''))
+      const fileData = `data:application/octet-stream;base64,${b64Data}`
+      document.getElementById("target_file").setAttribute("href", fileData)
+      document.getElementById("target_file").setAttribute("download", `file.${secretExt}`)
+      document.getElementById("file_output_div").hidden = false
+    } else {
+      throw new Error(`Unknown secret type: ${secretType}`)
+    }
 
     setMessage("Decrypted successfully")
 

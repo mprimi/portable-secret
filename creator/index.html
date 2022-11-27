@@ -89,26 +89,33 @@
     }
 
     let plainText = new Uint8Array()
+    let fileExtension = ""
+    // TODO move this messy stuff out of encrypt path
+    // TODO handle files with no extension (currently captures full filename as extension)
+    // TODO file and image are identical except for input field
     if (selectedInputType == '') {
-      throw new Error(`Select a secret input type (message, file, image)`)
+      throw new Error(`Select input type (message, file, image)`)
     } else if (selectedInputType == 'text') {
       // Message input field, as array of bytes
       plainText = new TextEncoder().encode(document.getElementById("text_input").value);
     } else if (selectedInputType == 'image') {
-      image_input
       files = document.getElementById("image_input").files
       if (files.length < 1) {
         throw new Error(`No file selected`)
       }
-      fileContent = await files[0].arrayBuffer()
+      f = files[0]
+      fileContent = await f.arrayBuffer()
       plainText = new Uint8Array(fileContent)
+      fileExtension = f.name.split(".").pop()
     } else if (selectedInputType == 'file') {
       files = document.getElementById("file_input").files
       if (files.length < 1) {
         throw new Error(`No file selected`)
       }
-      fileContent = await files[0].arrayBuffer()
+      f = files[0]
+      fileContent = await f.arrayBuffer()
       plainText = new Uint8Array(fileContent)
+      fileExtension = f.name.split(".").pop()
     } else {
       throw new Error(`Unhandled input type: '${selectedInputType}'`)
     }
@@ -150,6 +157,7 @@
       salt: saltHexString,
       iv: ivHexString,
       cipher: cipherHexString,
+      extension: fileExtension,
     }
   }
 
@@ -191,6 +199,8 @@
       values = values.replaceAll("'{.SALT_HEX}'", encryption.salt)
       values = values.replaceAll("'{.IV_HEX}'", encryption.iv)
       values = values.replaceAll("'{.CIPHER_HEX}'", encryption.cipher)
+      values = values.replaceAll("'{.SECRET_TYPE}'", selectedInputType)
+      values = values.replaceAll("'{.SECRET_EXTENSION}'", encryption.extension)
 
       secretPage = pageTemplate
       secretPage = secretPage.replaceAll("{{DECRYPT_SCRIPT}}\n", decryptScript)
@@ -300,6 +310,7 @@
     Password:<br>
     <input type="text" id="password" value="banana" required>
   </div>
+
 
   <div>
     Password hint:<br>

@@ -1,5 +1,5 @@
-// These values are created
-
+const secretType = "'{.SECRET_TYPE}'"
+const secretExt  = "'{.SECRET_EXTENSION}'"
 const saltSize   = '{.SALT_SIZE}'  // bytes
 const blockSize  = '{.BLOCK_SIZE}' // bytes
 const keySize    = '{.KEY_SIZE}'   // bytes
