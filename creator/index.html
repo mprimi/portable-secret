@@ -184,7 +184,6 @@
       setMessage("⏳ Retrieving templates...")
 
       const pageTemplate = await loadTemplate("secret-template.html")
-      const decryptScript = await loadTemplate("decrypt.js")
       const valuesTemplate = await loadTemplate("values.js")
 
       const passwordHint = document.getElementById("password_hint").value
@@ -203,7 +202,6 @@
       values = values.replaceAll("'{.SECRET_EXTENSION}'", encryption.extension)
 
       secretPage = pageTemplate
-      secretPage = secretPage.replaceAll("{{DECRYPT_SCRIPT}}\n", decryptScript)
       secretPage = secretPage.replaceAll("{{PASSWORD_HINT}}", passwordHint)
       secretPage = secretPage.replaceAll("{{VALUES}}\n", values)
 
