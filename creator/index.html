@@ -8,6 +8,14 @@
   const iterations = 1000000 // key derivation (with PBKDF2)
   const keySize = 32 // bytes (derived with PBKDF2, used by AES)
 
+  const inputElementIds = {
+    "text": "text_input_div",
+    "image": "image_input_div",
+    "file": "file_input_div",
+  }
+
+  let selectedInputType = ""
+
   async function init() {
     await refreshSalt()
     await refreshIV()
@@ -80,8 +88,35 @@
       throw new Error(`Unexpected IV length: ${iv.length}`)
     }
 
-    // Message input field, as array of bytes
-    let plainText = new TextEncoder().encode(document.getElementById("message").value)
+    let plainText = new Uint8Array()
+    if (selectedInputType == '') {
+      throw new Error(`Select a secret input type (message, file, image)`)
+    } else if (selectedInputType == 'text') {
+      // Message input field, as array of bytes
+      plainText = new TextEncoder().encode(document.getElementById("text_input").value);
+    } else if (selectedInputType == 'image') {
+      image_input
+      files = document.getElementById("image_input").files
+      if (files.length < 1) {
+        throw new Error(`No file selected`)
+      }
+      fileContent = await files[0].arrayBuffer()
+      plainText = new Uint8Array(fileContent)
+    } else if (selectedInputType == 'file') {
+      files = document.getElementById("file_input").files
+      if (files.length < 1) {
+        throw new Error(`No file selected`)
+      }
+      fileContent = await files[0].arrayBuffer()
+      plainText = new Uint8Array(fileContent)
+    } else {
+      throw new Error(`Unhandled input type: '${selectedInputType}'`)
+    }
+
+    console.log(plainText)
+    if (plainText.length <= 0) {
+      throw new Error(`Plaintext is empty`)
+    }
 
     // Pad plaintext to block size, as describe in:
     // https://en.wikipedia.org/wiki/Padding_(cryptography)#PKCS#5_and_PKCS#7
@@ -118,7 +153,7 @@
     }
   }
 
-  async function generateSecret() {
+  async function createSecret() {
 
     setMessage("⏳ Creating Secret...")
 
@@ -205,13 +240,36 @@
     return Uint8Array.from(bytes);
   }
 
+  function setInputType(selectedType) {
+    selectedInputType = selectedType;
+
+    for (let type in inputElementIds) {
+      let element = document.getElementById(inputElementIds[type])
+      if (type == selectedType) {
+        element.hidden = false
+      } else {
+        element.hidden = true
+      }
+    }
+  }
+
   </script>
 </head>
 <body onload="init()">
   <h1>Secret Creator</h1>
   <h2>This page runs entirely in your window. No dependencies or calls to the outside world.</h2>
-  <h3>No data leaves your browser, other than the (encrypted) secret you can download</h3>
   But don't take my word for it. Check out the source code!
+
+  <!-- Radio selector for type of secret -->
+
+  <form>
+    <input type="radio" id="text_option" name="input_type" value="text" onclick="setInputType('text')">
+    <label for="text_option">Plain text message</label>
+    <input type="radio" id="image_option" name="input_type" value="image" onclick="setInputType('image')">
+    <label for="image_option">Image</label>
+    <input type="radio" id="file_option" name="input_type" value="file" onclick="setInputType('file')">
+    <label for="file_option">File</label>
+  </form>
 
   <!-- Error message -->
 
@@ -223,8 +281,7 @@
   <!-- Inputs -->
 
   <p>
-    Salt and IV are random input of the encryption, but they do not need to be secret.<br>
-    They are random bytes coming straight from your browser's RNG.<br>
+    Salt and IV are random input of the encryption, coming straight from your browser's Random number generator<br>
     Do not create multiple secrets with the same values. Hit the buttons to regenerate.<br>
   </p>
   <div>
@@ -257,15 +314,25 @@ Read this for suggestions and considerations: https://mprimi.github.io/portable-
     </textarea>
   </div>
 
-  <div>
-    Secret message:<br>
-    <textarea rows="16" cols="80" id="message" required>Hello World</textarea>
+  <!-- Input types, only one visible at time -->
+
+  <div id="text_input_div" hidden>
+    <h2>📝 Secret message</h2>
+    <textarea rows="16" cols="80" id="text_input" name="text_content"></textarea>
+  </div>
+  <div id="image_input_div" hidden>
+    <h2>🌆 Secret image</h2>
+    <input type="file" id="image_input" alt="Upload" name="image_content" accept="image/*">
+  </div>
+  <div id="file_input_div" hidden>
+    <h2>📎 Secret File</h2>
+    <input type="file" id="file_input" name="file_content">
   </div>
 
   <!-- Generate button, and Download link -->
 
   <div>
-    <input type="button" value="⚡️ Generate" onclick='generateSecret()'>
+    <input type="button" value="⚡️ Generate" onclick='createSecret()'>
   </div>
   <div>
     <a id="target_link" download="hello.html">Download secret.html</a>
