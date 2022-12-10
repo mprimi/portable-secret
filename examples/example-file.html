@@ -225,7 +225,10 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
 
   <div>
     <h4>Password hint:</h4>
-    <pre class="hint">{{PASSWORD_HINT}}</pre>
+    <pre class="hint">A yellow edible fruit with elongated shape. 6 letters, all lowercase
+
+(N.B. this is a _weak_ password. But for this example it will do)
+</pre>
   </div>
 
   <div>
@@ -273,6 +276,14 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
   </details>
 </body>
 <script>
-{{VALUES}}
+const secretType = "file"
+const secretExt  = "zip"
+const saltSize   = 16  // bytes
+const blockSize  = 16 // bytes
+const keySize    = 32   // bytes
+const iterations = 1000000
+const saltHex    = "2129324c961c36f1f95f19a7ad3e6fbb"
+const ivHex      = "da90ba2419169b097b0d5c12adbafb89"
+const cipherHex  = "65eb864716b78d18ba170a32275328f7217c1b76f462d17589141d0007afd40bf0aadab0cc4f332e99d51208c834a78d043fec66d556ca1b28126f4d335cf54eabe755025efbe31d01d998c101ec8843134e19994a451605afca0b76533a3e85ec0b5fa98a2d2f2cb9e028842fcf5ab09b9fb999f6b651b914231f33d37ef4a515899cab577714f49ea275688d0b59074305c690dea30610bef138277a0929a4b5cc5d116c1a7dbcc088f3b06334bc40938dad673e7141bdebea661bd37103ab62e21cb3cfb81853a2d6b37a76a250fee2bf61b787a4bec53cb86a3a7099c122e38296b07eaf5bd87eee2b0f5c5311a38e698b03189ea60be0bcf360098453320abd69b6e9c0b9b5d3771eb0fd082a36722c7690e0d76f3bf54dae67e20a4e6ebfcd20424c3347ecee3d07fec2b10036d68fb5f742af91cb16265ecc25af8a2667a2a7c9916318f27f16daa684e1522c1cd6439327371519f593f744d06f98cc3597f0ea05167053463baaea2cb424dd9e940a3ea1bdc06a54e89429c3dbbcdc41a5329efbd367d175abe6f91cd08cae511ef9b4e7cc41ed416ec804fa8aaae1101706d6609910c6bac95511ed65efd4cf6db77f2886f0a7c624726876dd571dea081b25008c6aa003a809edc43a6a2363471ddf6adda08c110fd48c32bfd7c43e285889712b7796cbf77b730447be75471d0dfe7de3db900ee0c56daac30ecea12c0f62aefa9d53a8ecf7ca7f26df790b42789736446c10254a6832e5017eeba4ee3e52bb0fac7a0db30f82190705324e1fe9b42873365cd06acad450c6a0a6"
 </script>
 </html>

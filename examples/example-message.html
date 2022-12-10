@@ -225,7 +225,9 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
 
   <div>
     <h4>Password hint:</h4>
-    <pre class="hint">{{PASSWORD_HINT}}</pre>
+    <pre class="hint">A yellow edible fruit with elongated shape. 6 letters, all lowercase
+
+(N.B. this is a _weak_ password. But for this example it will do)</pre>
   </div>
 
   <div>
@@ -273,6 +275,14 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
   </details>
 </body>
 <script>
-{{VALUES}}
+const secretType = "message"
+const secretExt  = ""
+const saltSize   = 16  // bytes
+const blockSize  = 16 // bytes
+const keySize    = 32   // bytes
+const iterations = 1000000
+const saltHex    = "f3cb8d76529b21fce9000a4de1d400e5"
+const ivHex      = "a8fef2a068034152e5f8a18efa98eea4"
+const cipherHex  = "057281d7c24c2c4fd17ee845dc67aa093a2b51a616e8bbfe5d7cdddfbadca809ca1ba273cc90192d9fe5c8b236dcdac5ce3fb4583485f3be8bffa5c0b29329b60146b3f05168241d42103ecb52c6fc43efa2dd0895b0f4e6483ffdc43d1edad10f5b14d7aba314647afb53ae80c9f1cf"
 </script>
 </html>
