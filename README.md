@@ -22,6 +22,14 @@ Sounds too good to be true? Keep reading. This is for you.
 
 ---
 
+Portable Secret is not a product and it is barely a project.
+**It is just a neat trick, a *hack***.
+
+The [source code](https://github.com/mprimi/portable-secret) and [creator tool](https://mprimi.github.io/portable-secret/creator/) are provided as a demonstration.
+
+
+---
+
 ## How it works
 
 A 'Portable Secret' is simply an HTML file that also contains:
@@ -42,14 +50,6 @@ The embedded code is straightforward:
  - Take the password and generate a key
  - Use the key to decrypt the payload
  - Display the decrypted secret
-
----
-
-Portable Secret is not a product and it is barely a project.
-**It is just a neat trick, a *hack***.
-
-The [source code](https://github.com/mprimi/portable-secret) and [creator tool](https://mprimi.github.io/portable-secret/creator/) are provided as a demonstration.
-
 
 ---
 
@@ -115,6 +115,8 @@ I came up with Portable Secret on my own, but I have since found a few projects 
 https://github.com/kaushalmeena/digi-cloak
 
 https://9p4.github.io/hackna/
+
+https://github.com/dividuum/html-vault
 
 
 If you are aware of other similar projects, please let me know and I'll link them here.
