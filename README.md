@@ -22,7 +22,7 @@ Sounds too good to be true? Keep reading. This is for you.
 
 ---
 
-# How it works
+## How it works
 
 A 'Portable Secret' is simply an HTML file that also contains:
  - An encrypted payload
@@ -114,6 +114,9 @@ I came up with Portable Secret on my own, but I have since found a few projects 
 
 https://github.com/kaushalmeena/digi-cloak
 
+https://9p4.github.io/hackna/
+
+
 If you are aware of other similar projects, please let me know and I'll link them here.
 
 ### Feedback
@@ -123,3 +126,5 @@ I would love to hear what you think of this project, good, bad, or ugly.
 Please use [GH issue](https://github.com/mprimi/portable-secret/issues) to report a problems and make suggestions. For everything else, start a [GH Discussion](https://github.com/mprimi/portable-secret/discussions).
 
 You can also find my email on my homepage (linked from my GH profile).
+
+Or discuss on [HackerNews](https://news.ycombinator.com/item?id=34083366)
