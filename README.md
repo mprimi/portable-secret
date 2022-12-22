@@ -112,6 +112,10 @@ I cannot take responsibility for such misuse any more than a hammer manufacturer
 
 I came up with Portable Secret on my own, but I have since found a few projects that do something similar.
 
+https://github.com/fmeum/polysafe
+
+https://smondet.gitlab.io/hscrypt/
+
 http://hypervault.github.io
 
 https://github.com/ccorcos/encrypted-html-vault
