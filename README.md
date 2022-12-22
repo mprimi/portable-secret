@@ -112,12 +112,15 @@ I cannot take responsibility for such misuse any more than a hammer manufacturer
 
 I came up with Portable Secret on my own, but I have since found a few projects that do something similar.
 
+http://hypervault.github.io
+
+https://github.com/ccorcos/encrypted-html-vault
+
 https://github.com/kaushalmeena/digi-cloak
 
 https://9p4.github.io/hackna/
 
 https://github.com/dividuum/html-vault
-
 
 If you are aware of other similar projects, please let me know and I'll link them here.
 
