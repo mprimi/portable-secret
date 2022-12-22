@@ -112,21 +112,25 @@ I cannot take responsibility for such misuse any more than a hammer manufacturer
 
 I came up with Portable Secret on my own, but I have since found a few projects that do something similar.
 
-https://github.com/fmeum/polysafe
+[PolySafe](https://github.com/fmeum/polysafe)
 
-https://smondet.gitlab.io/hscrypt/
+[`hscrypt`](https://smondet.gitlab.io/hscrypt/)
 
-http://hypervault.github.io
+[Hypervault](http://hypervault.github.io)
 
-https://github.com/ccorcos/encrypted-html-vault
+[Encrypted HTML Vault](https://github.com/ccorcos/encrypted-html-vault)
 
-https://github.com/kaushalmeena/digi-cloak
+[UltraCrypt](https://9p4.github.io/hackna/)
 
-https://9p4.github.io/hackna/
+[html-vault](https://github.com/dividuum/html-vault)
 
-https://github.com/dividuum/html-vault
+[Password Protect My File](https://github.com/louissobel/ppmf)
 
-If you are aware of other similar projects, please let me know and I'll link them here.
+[Emergency Contacts](https://github.com/jwillmer/emergency-contacts)
+
+[Digi-Cloak](https://github.com/kaushalmeena/digi-cloak)
+
+If you are aware of other similar/related projects, please let me know and I'll link them here.
 
 ### Feedback
 
