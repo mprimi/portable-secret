@@ -1,0 +1,28 @@
+body {
+    background-color: lavender;
+    font-size: large;
+    margin: 50px;
+  }
+
+  div {
+    margin: 5px;
+  }
+
+  button {
+    font-size: large;
+    padding: 12px 20px;
+  }
+
+  input {
+    font-family: monospace;
+    font-size: large;
+  }
+
+  textarea {
+    font-family: monospace;
+    font-size: large;
+  }
+
+  a.download_link {
+    font-size: xx-large;
+  }
