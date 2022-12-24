@@ -20,11 +20,11 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
     a.decrypted { font-size: xx-large; }
     input.password_input { font-size: large;padding: 12px 20px; }
   </style>
-  <script src="./head-script.js" defer>
+  <script defer>
     
     const salt = hexStringToBytes(saltHex);
     const iv = hexStringToBytes(ivHex);
-    
+
     // Display the encryption inputs on the page (invoked during body onload)
     {
       document.getElementById('secret_type').textContent = secretType;
@@ -114,7 +114,7 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
 
     // Transform hexadecimal string to Uint8Array
     function hexStringToBytes(input) {
-      if (input.length % 2 == 1) throw new Error('Lenght of hex string is odd');
+      if (input.length % 2 == 1) throw new Error('Length of hex string is odd');
       const bytes = new Uint8Array(input.length / 2);
       for (var c = 0; c < input.length; c += 2) bytes[c / 2] = parseInt(input.substr(c, 2), 16);
       return bytes;
