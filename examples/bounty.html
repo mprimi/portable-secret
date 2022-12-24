@@ -91,7 +91,7 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
         }
         
         else if (secretType == "file") {
-          // Transform image to base64
+          // Transform file to base64
           b64Data = btoa(decrypted.reduce((data, byte) => data + String.fromCharCode(byte), ''));
           // Create 'data' URI - https://en.wikipedia.org/wiki/Data_URI_scheme
           const fileData = `data:application/octet-stream;base64,${b64Data}`;
