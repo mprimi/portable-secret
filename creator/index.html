@@ -233,10 +233,10 @@
 
       secretPage = pageTemplate
       secretPage = secretPage.replaceAll("{{PASSWORD_HINT}}", passwordHint)
-      secretPage = secretPage.replaceAll("{{VALUES}}\n", values)
+      secretPage = secretPage.replaceAll("{{VALUES}}", values)
 
-      const dataURI = "data:application/octet-stream;base64," + btoa(secretPage)
-      document.getElementById("target_link").setAttribute("href", dataURI)
+      var blob = new Blob([secretPage], {'type':'text/html'});
+      document.getElementById("target_link").setAttribute("href", window.URL.createObjectURL(blob))
       document.getElementById("target_link").hidden = false
 
       setMessage("✅ Ready for download")
