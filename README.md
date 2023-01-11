@@ -112,6 +112,8 @@ I cannot take responsibility for such misuse any more than a hammer manufacturer
 
 I came up with Portable Secret on my own, but I have since found a few projects that do something similar.
 
+[StatiCrypt](https://github.com/robinmoisson/staticrypt)
+
 [PolySafe](https://github.com/fmeum/polysafe)
 
 [`hscrypt`](https://smondet.gitlab.io/hscrypt/)
@@ -129,6 +131,8 @@ I came up with Portable Secret on my own, but I have since found a few projects 
 [Emergency Contacts](https://github.com/jwillmer/emergency-contacts)
 
 [Digi-Cloak](https://github.com/kaushalmeena/digi-cloak)
+
+[Pretty Easy Privacy](https://prettyeasyprivacy.xyz/)
 
 If you are aware of other similar/related projects, please let me know and I'll link them here.
 
