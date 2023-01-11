@@ -63,9 +63,13 @@
 
     // Whatever array of bytes is in the password field
     let password = new TextEncoder().encode(document.getElementById("password").value)
+    const passwordConfirm = new TextEncoder().encode(document.getElementById("password-confirm").value)
 
     if (password.length == 0) {
       throw new Error(`Empty password`)
+    }
+    else if (!bufEqual(password, passwordConfirm)) {
+      throw new Error(`Passwords must match`)
     }
 
     // Import password into a Key suitable for use with Cryptography APIs
@@ -294,6 +298,20 @@
     setMessage("Ready to encrypt 👍")
   }
 
+  function bufEqual(a, b) {
+    if (a.length !== b.length) {
+      return false;
+    }
+
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   </script>
 </head>
 <body onload="init()">
@@ -319,10 +337,17 @@
   </div>
 
   <div>
-    Password:<br>
-    <input type="text" id="password" value="banana" required>
+    <label>
+      Password:<br>
+      <input type="password" id="password" value="banana" required>
+    </label>
   </div>
-
+  <div>
+    <label>
+      Confirm Password:<br>
+      <input type="password" id="password-confirm" value="banana" required>
+    </label>
+  </div>
 
   <div>
     Password hint:<br>
