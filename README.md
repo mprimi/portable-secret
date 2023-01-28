@@ -27,6 +27,7 @@ Portable Secret is not a product and it is barely a project.
 
 The [source code](https://github.com/mprimi/portable-secret) and [creator tool](https://mprimi.github.io/portable-secret/creator/) are provided as a demonstration.
 
+**Update January 2023**: [Rocky W.](https://www.rocky.dev/) took this idea and ran with it, creating a beautiful full-fledged product: [PrivacyProtect.dev](https://www.privacyprotect.dev/)
 
 ---
 
