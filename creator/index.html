@@ -44,8 +44,8 @@
   const iterations = 1000000 // key derivation (with PBKDF2)
   const keySize = 32 // bytes (derived with PBKDF2, used by AES)
 
-  // Display a warning if the current URI scheme is not HTTPS
-  async function checkScheme() {
+  // Display a warning if the current URL protocol is not HTTPS
+  async function checkURLProtocol() {
     if (window.location.protocol !== 'https:') {
       document.getElementById("danger_text").hidden = false
     }
@@ -60,8 +60,7 @@
   let selectedInputType = ""
 
   async function init() {
-    // Try to detect insecure contexts as soon as possible
-    await checkScheme()
+    await checkURLProtocol()
     await refreshSalt()
     await refreshIV()
     setMessage("Select secret type: message, image, or file")
