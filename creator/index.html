@@ -13,6 +13,12 @@
       margin: 5px;
     }
 
+    .danger {
+      background-color: lightcoral;
+      border: 2px dotted red;
+      padding: 12px 20px;
+    }
+
     button {
       font-size: large;
       padding: 12px 20px;
@@ -38,6 +44,13 @@
   const iterations = 1000000 // key derivation (with PBKDF2)
   const keySize = 32 // bytes (derived with PBKDF2, used by AES)
 
+  // Display a warning if the current URL protocol is not HTTPS
+  async function checkURLProtocol() {
+    if (window.location.protocol !== 'https:') {
+      document.getElementById("danger_text").hidden = false
+    }
+  }
+  
   const inputElementIds = {
     "message": "text_input_div",
     "image": "image_input_div",
@@ -47,6 +60,7 @@
   let selectedInputType = ""
 
   async function init() {
+    await checkURLProtocol()
     await refreshSalt()
     await refreshIV()
     setMessage("Select secret type: message, image, or file")
@@ -303,6 +317,10 @@
     But don't take my word for it. Check out the <a href="https://github.com/mprimi/portable-secret/tree/main/creator" target="_blank">source code</a>!
   </p>
 
+  <div id="danger_text" class="danger" hidden>
+    Please host this tool on an <abbr title="Hypertext Transfer Protocol Secure">HTTPS</abbr> server (notice that some browsers are not happy with a self-signed certificate).
+  </div>
+  
   <!-- Inputs -->
 
   <div>
