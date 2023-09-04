@@ -68,7 +68,7 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
   </style>
   <script>
   // Display the encryption inputs on the page (invoked during body onload)
-  async function loadValues() {
+  async function init() {
     document.getElementById("secret_type").innerHTML = secretType
     document.getElementById("salt").setAttribute("value", saltHex)
     document.getElementById("iv").setAttribute("value", ivHex)
@@ -77,6 +77,13 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
     if (secretType == 'file') {
       document.getElementById("target_file").innerHTML = `Download file.${secretExt}`
     }
+    
+    document.getElementById("password").addEventListener("keydown", (event) => {
+      // Decrypt when the user hits the Enter key after entering their password.
+      if (event.key === "Enter") {
+        decrypt();
+      }
+    })
   }
 
   // Invoked when the 'Decrypt' button is pressed
@@ -212,7 +219,7 @@ It uses your browser's cryptograpy APIs to decrypt it, if you know the password.
   }
   </script>
 </head>
-<body onload="loadValues()">
+<body onload="init()">
 
   <h1>This page contains a secret <span id="secret_type"></span></h1>
   <h2>Enter the password to decrypt it</h2>
