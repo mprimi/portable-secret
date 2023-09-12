@@ -61,11 +61,18 @@
 
     setMessage("⏳ Importing key...")
 
-    // Whatever array of bytes is in the password field
-    let password = new TextEncoder().encode(document.getElementById("password").value)
+    const passwordEl = document.getElementById("password")
+    const passwordConfirmEl = document.getElementById("password-confirm")
+
+    // Whatever arrays of bytes are in the password fields
+    const password = new TextEncoder().encode(passwordEl.value)
+    const passwordConfirm = new TextEncoder().encode(passwordConfirmEl.value)
 
     if (password.length == 0) {
       throw new Error(`Empty password`)
+    }
+    else if (passwordEl.value !== passwordConfirmEl.value) {
+      throw new Error(`Passwords must match`)
     }
 
     // Import password into a Key suitable for use with Cryptography APIs
@@ -319,10 +326,17 @@
   </div>
 
   <div>
-    Password:<br>
-    <input type="text" id="password" value="banana" required>
+    <label>
+      Password:<br>
+      <input type="password" id="password" value="banana" required>
+    </label>
   </div>
-
+  <div>
+    <label>
+      Confirm Password:<br>
+      <input type="password" id="password-confirm" value="banana" required>
+    </label>
+  </div>
 
   <div>
     Password hint:<br>
