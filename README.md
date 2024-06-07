@@ -6,8 +6,8 @@ Better privacy, without special software.
 
 Portable Secret is a little hack that allows you to:
 
- - Send encrypted messages/images/files over insecure channels (email, messaging, ...)
- - Store sensitive information (passwords, documents) in insecure locations (web, Cloud drives, USB drives)
+- Send encrypted messages/images/files over insecure channels (email, messaging, ...)
+- Store sensitive information (passwords, documents) in insecure locations (web, Cloud drives, USB drives)
 
 It's portable because: **decrypting these secrets does not require special software!**
 All you need is a browser.
@@ -23,7 +23,7 @@ Sounds too good to be true? Keep reading. This is for you.
 ---
 
 Portable Secret is not a product and it is barely a project.
-**It is just a neat trick, a *hack***.
+**It is just a neat trick, a _hack_**.
 
 The [source code](https://github.com/mprimi/portable-secret) and [creator tool](https://mprimi.github.io/portable-secret/creator/) are provided as a demonstration.
 
@@ -34,8 +34,9 @@ The [source code](https://github.com/mprimi/portable-secret) and [creator tool](
 ## How it works
 
 A 'Portable Secret' is simply an HTML file that also contains:
- - An encrypted payload
- - Some Javascript that calls into the browser's [Web Cryptography APIs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
+
+- An encrypted payload
+- Some Javascript that calls into the browser's [Web Cryptography APIs](https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API)
 
 Any (reasonably modern) web browser can open the file, even without an internet connection!
 If you know the password, you can recover the secret within.
@@ -48,9 +49,12 @@ It can be carried on a USB drive and decrypted without an internet connection, o
 To understand how it works, go ahead and [create yourself a secret](https://mprimi.github.io/portable-secret/creator/). Download and inspect the generated Portable Secret.
 
 The embedded code is straightforward:
- - Take the password and generate a key
- - Use the key to decrypt the payload
- - Display the decrypted secret
+
+- Take the password and generate a key
+- Use the key to decrypt the payload
+- Display the decrypted secret
+
+The current encryption implementation uses [AES-GCM](https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/encrypt#aes-gcm), generally considered the strongest option of the Web Crypto API due to its use of authentication to check that the ciphertext has not been modified by an attacker.
 
 ---
 
@@ -62,12 +66,13 @@ Do you want to communicate privately with people, but you can't expect them to l
 
 Send a Portable Secret. For example as email attachment.
 
- > Hey ___, attached to this email is the PDF and data you requested, but it's encrypted. Never double-click on attachments, it's dangerous! Give me a call when you get this, and I'll show you how to read it.
+> Hey \_\_\_, attached to this email is the PDF and data you requested, but it's encrypted. Never double-click on attachments, it's dangerous! Give me a call when you get this, and I'll show you how to read it.
 
 Whenever they call me, I tell them:
- > Right-click on the attachment and 'Open with...' any browser.
- > The password is 'banana_split'.
- > Now you can save the decrypted PDF.
+
+> Right-click on the attachment and 'Open with...' any browser.
+> The password is 'banana_split'.
+> Now you can save the decrypted PDF.
 
 ### Store top-level secrets
 
@@ -105,7 +110,7 @@ Eventually I'll fill in this paragraph. For now all you get is the obligatory XK
 
 ### On tools
 
-Portable Secret is a *tool*. As such, it can be used *wrong* (e.g. weak password), or used to do bad things (e.g., exfiltrate intellectual property).
+Portable Secret is a _tool_. As such, it can be used _wrong_ (e.g. weak password), or used to do bad things (e.g., exfiltrate intellectual property).
 
 I cannot take responsibility for such misuse any more than a hammer manufacturer can take responsibility for me hammering my thumb, or using the hammer to attack someone.
 
