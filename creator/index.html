@@ -35,7 +35,7 @@
   <script>
   const blockSize = 16 // bytes (for AES, IV)
   const saltSize = 32 // bytes (for PBKDF2)
-  const iterations = 1000000 // key derivation (with PBKDF2)
+  const minIterations = 1000000 // will reject a number below this (for PBKDF2)
   const keySize = 32 // bytes (derived with PBKDF2, used by AES)
 
   const inputElementIds = {
@@ -49,6 +49,7 @@
   async function init() {
     await refreshSalt()
     await refreshIV()
+    await refreshIterations()
     setMessage("Select secret type: message, image, or file")
   }
 
@@ -87,6 +88,13 @@
 
     if (salt.length != saltSize) {
       throw new Error(`Unexpected salt length: ${salt.length}`)
+    }
+
+    // Salt for password derivation with PBKDF2 (byte array)
+    let iterations = document.getElementById("iterations").value
+
+    if (iterations < minIterations) {
+      throw new Error(`Number of PBKDF2 iteration is below minimum recommended: ${minIterations}`)
     }
 
     // 'Strech' a password into a cryptographically secure key of a given size
@@ -185,6 +193,7 @@
     return {
       salt: saltHexString,
       iv: ivHexString,
+      iterations: iterations,
       cipher: cipherHexString,
       extension: fileExtension,
     }
@@ -223,7 +232,7 @@
       values = values.replaceAll("'{.SALT_SIZE}'", saltSize)
       values = values.replaceAll("'{.BLOCK_SIZE}'", blockSize)
       values = values.replaceAll("'{.KEY_SIZE}'", keySize)
-      values = values.replaceAll("'{.ITERATIONS}'", iterations)
+      values = values.replaceAll("'{.ITERATIONS}'", encryption.iterations)
       values = values.replaceAll("'{.SALT_HEX}'", encryption.salt)
       values = values.replaceAll("'{.IV_HEX}'", encryption.iv)
       values = values.replaceAll("'{.CIPHER_HEX}'", encryption.cipher)
@@ -264,6 +273,17 @@
     let iv = crypto.getRandomValues(new Uint8Array(blockSize));
     document.getElementById("iv").value = bytesToHexString(iv)
     setMessage("Refreshed IV")
+  }
+
+  async function refreshIterations() {
+    // N.B. This random number does not need to be cryptographically strong
+    // Round numbers such as 1M are more likely to have tables available.
+    // So just to make it a little harder, pick a slightly higher number.
+    maxExtra = 1000000
+    let r = crypto.getRandomValues(new Uint16Array(1))[0]
+    i = minIterations + (r % maxExtra)
+    document.getElementById("iterations").value = i
+    setMessage("Refreshed iterations count")
   }
 
   function bytesToHexString(input) {
@@ -317,6 +337,10 @@
     IV: 0x
     <input type="text" id="iv" size="33" value="❓" required>
     <input type="button" value="🔄" onclick='refreshIV()'>
+    <br>
+    PBKDF2 iterations:
+    <input id="iterations" type="number" value="1000000" required>
+    <input type="button" value="🔄" onclick='refreshIterations()'>
     <p>
       <small>Salt and IV are random input coming straight from your browser's Random Number Generator. Do not reuse across messages.</small>
     </p>
