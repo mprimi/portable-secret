@@ -20,5 +20,5 @@ if __name__ == '__main__':
     server_address = (host, port)
     httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
     httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
-    print(f"https://{host}:{port}")
+    print(f"https://localhost:{port}")
     httpd.serve_forever()
