@@ -327,25 +327,6 @@
     But don't take my word for it. Check out the <a href="https://github.com/mprimi/portable-secret/tree/main/creator" target="_blank">source code</a>!
   </p>
 
-  <!-- Inputs -->
-
-  <div>
-    Salt: 0x
-    <input type="text" id="salt" size="33" value="❓" required>
-    <input type="button" value="🔄" onclick='refreshSalt()'>
-    <br>
-    IV: 0x
-    <input type="text" id="iv" size="33" value="❓" required>
-    <input type="button" value="🔄" onclick='refreshIV()'>
-    <br>
-    PBKDF2 iterations:
-    <input id="iterations" type="number" value="1000000" required>
-    <input type="button" value="🔄" onclick='refreshIterations()'>
-    <p>
-      <small>Salt and IV are random input coming straight from your browser's Random Number Generator. Do not reuse across messages.</small>
-    </p>
-  </div>
-
   <div>
     Password:<br>
     <input type="text" id="password" value="banana" required>
@@ -360,6 +341,7 @@
 
   <!-- Radio selector for type of secret -->
 
+  <p>Secret type:</p>
   <form>
     <input type="radio" id="text_option" name="input_type" value="message" onclick="setInputType('message')">
     <label for="text_option">Message</label>
@@ -386,6 +368,7 @@
 
   <!-- Generate button, and Download link -->
 
+  <p><p>
   <div>
     <button type="button" onclick='createSecret()'>⚡️ Generate secret</button>
     <span id="errormsg"></span>
@@ -394,11 +377,31 @@
     <a id="target_link" class="download_link" download="secret.html" hidden>Save secret.html</a>
   </div>
 
-  <!-- Cipertext -->
+  <!-- Show "advanced" inputs and outputs -->
 
+  <br>
   <details>
-    <summary>Show ciphertext</summary>
+    <summary>Show more</summary>
+    <p>⚠️ Don't modify these settings unless you know what you are doing</p>
     <div>
+      Salt: 0x
+      <input type="text" id="salt" size="33" value="❓" required>
+      <input type="button" value="🔄" onclick='refreshSalt()'>
+      <br>
+      IV: 0x
+      <input type="text" id="iv" size="33" value="❓" required>
+      <input type="button" value="🔄" onclick='refreshIV()'>
+      <p><small><i>Salt and IV are random input coming straight from your browser's Random Number Generator. Do not reuse across messages.</i></small></p>
+    </div>
+    <div>
+      PBKDF2 iterations:
+      <input id="iterations" type="number" value="1000000" required>
+      <input type="button" value="🔄" onclick='refreshIterations()'>
+      <p><small><i>Higher iteration count slow down key generation, making dictionary-based attack harder.</i></small></p>
+    </div>
+    <div>
+      Ciphertext:
+      <br>
       <textarea rows="8" cols="80" id="cipher"></textarea>
     </div>
   </details>
