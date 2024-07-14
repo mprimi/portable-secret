@@ -89,13 +89,39 @@ I keep a copy of my passport encrypted on the internet. It's just an HTML file, 
 
 ---
 
-## Miscellaneous
+## Cryptography
 
-### Crack me if you can
+The following is a schematic representation of the encryption scheme implemented by the PortableSecret creator, as well as the decryption happening in the  PortableSecret itself.
+
+![Cryptography](./images/cryptography.png)
+
+This scheme and its parameters follow best practices and guidelines recommended by [NIST](https://www.nist.gov/cryptography) and [OWASP](https://owasp.org).
+
+### Encryption
+
+[`AES-GCM`](https://en.wikipedia.org/wiki/Galois/Counter_Mode) is used for Symmetric Authenticated Encryption.
+
+ - Symmetric because the same key is used to encrypt and decrypt
+ - *Authenticated* because it can verify the message **integrity** (if the ciphertext is tampered with, then it will fail to decrypt. As opposed to producing an invalid plaintext)
+
+### Key derivation
+
+[`PBKDF2`](https://en.wikipedia.org/wiki/PBKDF2) is used to turn a text password into an AES key.
+The purpose of this module is slowing down dictionary-based brute-force attacks.
+
+Unfortunately, the Web Crypto APIs do not support stronger KDFs such as [`scrypt`](https://en.wikipedia.org/wiki/Scrypt), [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt), or [Argon2](https://en.wikipedia.org/wiki/Argon2).
+
+---
+
+## Bounty: Crack me if you can
 
 Do you think this cannot possibly be secure? Great, prove it.
 
 [This secret](https://mprimi.github.io/portable-secret/examples/bounty.html) contains the recovery key for a Bitcoin wallet. Crack it and take my money!
+
+---
+
+## Miscellaneous
 
 ### Choosing a good password
 
