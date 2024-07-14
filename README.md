@@ -146,3 +146,17 @@ Please use [GH issue](https://github.com/mprimi/portable-secret/issues) to repor
 You can also find my email on my homepage (linked from my GH profile).
 
 Or discuss on [HackerNews](https://news.ycombinator.com/item?id=34083366)
+
+## References
+
+https://developer.mozilla.org/en-US/docs/Web/API/Web_Crypto_API
+
+https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+
+https://cheatsheetseries.owasp.org/cheatsheets/Cryptographic_Storage_Cheat_Sheet.html
+
+https://en.wikipedia.org/wiki/Galois/Counter_Mode
+
+https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf
+
+https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URLs
