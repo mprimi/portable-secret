@@ -241,6 +241,11 @@
 
       setMessage("✅ Ready for download")
 
+      // To avoid unintentional Salt & IV reuse,
+      // pick new ones after each secret is created
+      await refreshIV()
+      await refreshSalt()
+
     } catch (err) {
       setMessage("❌ " + err)
     }
