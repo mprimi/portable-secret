@@ -219,25 +219,24 @@
       let encryption = await encrypt()
       document.getElementById("cipher").innerHTML = encryption.cipher //0x string
 
-      setMessage("⏳ Retrieving templates...")
+      setMessage("⏳ Retrieving template...")
 
       const pageTemplate = await loadTemplate("secret-template.html")
-      const valuesTemplate = await loadTemplate("values.js")
 
       const passwordHint = document.getElementById("password_hint").value
 
       setMessage("⏳ Generating download blob...")
 
-      values = valuesTemplate
-      values = values.replaceAll("'{.SALT_SIZE}'", saltSize)
-      values = values.replaceAll("'{.BLOCK_SIZE}'", blockSize)
-      values = values.replaceAll("'{.KEY_SIZE}'", keySize)
-      values = values.replaceAll("'{.ITERATIONS}'", encryption.iterations)
-      values = values.replaceAll("'{.SALT_HEX}'", encryption.salt)
-      values = values.replaceAll("'{.IV_HEX}'", encryption.iv)
-      values = values.replaceAll("'{.CIPHER_HEX}'", encryption.cipher)
-      values = values.replaceAll("'{.SECRET_TYPE}'", selectedInputType)
-      values = values.replaceAll("'{.SECRET_EXTENSION}'", encryption.extension)
+      // Generate JavaScript configuration directly instead of using template
+      const values = `const secretType = "${selectedInputType}"
+const secretExt  = "${encryption.extension}"
+const saltSize   = ${saltSize}  // bytes
+const blockSize  = ${blockSize} // bytes
+const keySize    = ${keySize}   // bytes
+const iterations = ${encryption.iterations}
+const saltHex    = "${encryption.salt}"
+const ivHex      = "${encryption.iv}"
+const cipherHex  = "${encryption.cipher}"`
 
       secretPage = pageTemplate
       secretPage = secretPage.replaceAll("{{PASSWORD_HINT}}", passwordHint)
